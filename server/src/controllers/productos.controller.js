@@ -4,7 +4,7 @@ const getProductos = async (req, res) => {
   try {
     // throw new Error("query fail");
     const searchProductos = await productos.findAll();
-    res.json(searchProductos);
+    res.json({ searchProductos });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

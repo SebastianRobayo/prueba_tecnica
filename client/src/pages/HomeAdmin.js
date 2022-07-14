@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 export default function HomeAdmin() {
   const [numero_de_lote, setNumero_de_lote] = useState("");
@@ -8,31 +8,92 @@ export default function HomeAdmin() {
   const [precio, setPrecio] = useState("");
   const [cantidad_disponible, setCantidad_disponible] = useState("");
   const [fecha_de_ingreso, setFecha_de_ingreso] = useState("");
+  const [data, setData] = useState([]);
+  const [edicion, setEdicion] = useState(false);
 
   const submit = async (e) => {
     try {
       e.preventDefault();
-      let res = await axios.post(`http://localhost:5000/productos/create`, {
-        numero_de_lote: numero_de_lote,
-        nombre: nombre,
-        precio: precio,
-        cantidad_disponible: cantidad_disponible,
-        fecha_de_ingreso: fecha_de_ingreso,
-      });
-      Swal.fire(res.data.msg);
+      if (!edicion) {
+        await axios.post(`http://localhost:5000/productos/create`, {
+          numero_de_lote: numero_de_lote,
+          nombre: nombre,
+          precio: precio,
+          cantidad_disponible: cantidad_disponible,
+          fecha_de_ingreso: fecha_de_ingreso,
+        });
+      } else {
+        await axios.put(
+          `http://localhost:5000/productos/update/${data[0].id}`,
+          {
+            numero_de_lote: numero_de_lote,
+            nombre: nombre,
+            precio: precio,
+            cantidad_disponible: cantidad_disponible,
+            fecha_de_ingreso: fecha_de_ingreso,
+          }
+        );
+        console.log(data[0].id);
+      }
+      search();
+      clear();
+      setEdicion(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const search = async () => {
+    try {
+      let res = await axios.get(`http://localhost:5000/productos/search`);
+      console.log(res.data.searchProductos);
+      setData(res.data.searchProductos);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteProducto = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/productos/delete/${data[0].id}`
+      );
+      search();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const view = (e) => {
+    setNumero_de_lote(e.numero_de_lote);
+    setNombre(e.nombre);
+    setPrecio(e.precio);
+    setCantidad_disponible(e.cantidad_disponible);
+    setFecha_de_ingreso(e.fecha_de_ingreso);
+  };
+
+  const clear = () => {
+    setNumero_de_lote("");
+    setNombre("");
+    setPrecio("");
+    setCantidad_disponible("");
+    setFecha_de_ingreso("");
+  };
+
+  useEffect(() => {
+    search();
+  }, []);
+
   return (
     <>
       <div className="navbar bg-accent">
-        <a className="btn btn-ghost normal-case text-xl">Inventarios</a>
+        <a className="btn btn-ghost normal-case text-xl">
+          Inventarios | Administrador
+        </a>
       </div>
-      <div className="grid grid-cols-8">
-        <div className="col-span-4">
-          <div className="card w-96 bg-base-100 shadow-xl">
+      <div className="grid grid-cols-8 min-h-[80vh]">
+        <div className="col-span-3 flex justify-center items-center">
+          <div className="card w-96 bg-base-100 shadow-2xl">
             <div className="card-body">
               <form onSubmit={submit}>
                 <h2 className="card-title justify-center">
@@ -75,35 +136,65 @@ export default function HomeAdmin() {
                   onChange={(e) => setFecha_de_ingreso(e.target.value)}
                 />
                 <div className="card-actions justify-center my-3">
-                  <button type="submit" className="btn btn-primary">
-                    Ingresar
-                  </button>
+                  {edicion ? (
+                    <button type="submit" className="btn btn-secondary">
+                      Actualizar
+                    </button>
+                  ) : (
+                    <button type="submit" className="btn btn-primary">
+                      Ingresar
+                    </button>
+                  )}
                 </div>
               </form>
             </div>
           </div>
         </div>
-        <div className="col-span-4">
+        <div className="col-span-5 mx-2">
           <div class="overflow-x-auto">
-            <table class="table w-full">
+            <table class="table w-full my-10">
               <thead>
                 <tr>
-                  <th></th>
+                  <th>ID</th>
                   <th>Número de lote</th>
                   <th>Nombre</th>
                   <th>Precio</th>
                   <th>Cantidad disponible</th>
                   <th>Fecha de ingreso</th>
-                  <th>Interacción</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                </tr>
+                {data.map((item, index) => (
+                  <tr key={index}>
+                    <th>{item.id}</th>
+                    <td>{item.numero_de_lote}</td>
+                    <td>{item.nombre}</td>
+                    <td>{item.precio}</td>
+                    <td>{item.cantidad_disponible}</td>
+                    <td>{item.fecha_de_ingreso}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-square shadow-md"
+                        onClick={() => {
+                          view(item);
+                          setEdicion(true);
+                          console.log(item.id);
+                        }}
+                      >
+                        <FaEdit className="text-secondary text-2xl" />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-square shadow-md"
+                        onClick={() => deleteProducto()}
+                      >
+                        <FaTrashAlt className="text-neutral text-2xl" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

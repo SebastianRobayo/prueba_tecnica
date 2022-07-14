@@ -1,28 +1,28 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database/database");
 
-// modelo de la tabla productos
-const productos = sequelize.define(
-  "productos",
+// modelo de la tabla de historial
+const historial = sequelize.define(
+  "historial",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    numero_de_lote: {
-      type: DataTypes.BIGINT,
-    },
     nombre: {
       type: DataTypes.STRING,
+    },
+    producto: {
+      type: DataTypes.STRING,
+    },
+    cantidad: {
+      type: DataTypes.INTEGER,
     },
     precio: {
       type: DataTypes.BIGINT,
     },
-    cantidad_disponible: {
-      type: DataTypes.INTEGER,
-    },
-    fecha_de_ingreso: {
+    fecha_de_compra: {
       type: DataTypes.DATEONLY,
     },
   },
@@ -31,4 +31,4 @@ const productos = sequelize.define(
   }
 );
 
-module.exports = productos;
+module.exports = historial;

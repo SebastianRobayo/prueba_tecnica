@@ -3,16 +3,11 @@ const usuarios = require("../models/usuarios");
 const login = async (req, res) => {
   try {
     const { usuario, contrasena } = req.body;
-    const username = await usuarios.findOne({ where: { usuario } });
-    if (username) {
-      const password = await usuarios.findOne({ where: { contrasena } });
-      if (password) {
-        res.status(200).json({ message: "Credenciales correctas" });
-      } else {
-        res.status(400).json({ error: "Contraseña incorrecta" });
-      }
+    const user = await usuarios.findOne({ where: { usuario: usuario } });
+    if (!user) {
+      res.status(404).json({ message: "El usuario no existe" });
     } else {
-      res.status(400).json({ error: "Usuario no existe" });
+      res.status(200).json({ message: "Conexción exitosa" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });

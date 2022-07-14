@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const login = require("../controllers/usuarios.controller");
 
-router.get("/login", login);
+// rutas con sus respectivas peticiones
+router.post("/login", login);
 
 module.exports = router;

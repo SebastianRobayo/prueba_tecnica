@@ -10,10 +10,13 @@ export default function Login() {
     try {
       e.preventDefault();
       let res = await axios.post(`http://localhost:5000/login`, {
-        usuario,
-        contrasena,
+        usuario: usuario,
+        contrasena: contrasena,
       });
-      Swal.fire(res.data.msg);
+      Swal.fire(res.data.message);
+
+      window.location.href = "/home/cliente";
+      window.location.href = "/home/administrador";
     } catch (error) {
       console.log(error);
     }
@@ -21,45 +24,43 @@ export default function Login() {
 
   return (
     <>
-      <div className="bg-gradient-to-l from-primary to-secondary min-w-screen min-h-screen bg-opacity-60">
+      <div className="bg-base-100 min-w-screen min-h-screen">
         <div className="container px-10 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-40 md: justify-center items-center min-h-screen gap-x-0">
-            <div className="relative">
-              <div className="card glass hover:shadow-2xl w-full  shadow-2xl mx-auto lg:ml-5">
-                <div className="card-title">
-                  <h3 className="text-2xl my-3 mx-auto text-center text-primary-content">
-                    Inicio de sesión
-                  </h3>
-                </div>
-                <form onSubmit={login}>
-                  <div className="card-body">
-                    <input
-                      type="text"
-                      placeholder="Usuario"
-                      className="input glass shadow-lg w-full"
-                      value={usuario}
-                      onChange={(e) => setUsuario(e.target.value)}
-                      // required
-                    />
-                    <input
-                      type="password"
-                      placeholder="Contraseña"
-                      className="input glass shadow-lg w-full"
-                      value={contrasena}
-                      onChange={(e) => setContrasena(e.target.value)}
-                      // required
-                    />
-                    <div className="card-actions justify-center">
-                      <button
-                        type="submit"
-                        className="btn btn-neutral btn-outline glass shadow-lg"
-                      >
-                        Iniciar Sesión
-                      </button>
-                    </div>
-                  </div>
-                </form>
+          <div className="flex justify-center items-center min-h-screen gap-x-0">
+            <div className="card w-96 shadow-2xl mx-auto bg-accent">
+              <div className="card-title">
+                <h3 className="text-2xl my-3 mx-auto text-center text-neutral">
+                  Inicio de sesión
+                </h3>
               </div>
+              <form onSubmit={login}>
+                <div className="card-body">
+                  <input
+                    type="text"
+                    placeholder="Usuario"
+                    className="input glass shadow-lg w-full"
+                    value={usuario}
+                    onChange={(e) => setUsuario(e.target.value)}
+                    // required
+                  />
+                  <input
+                    type="password"
+                    placeholder="Contraseña"
+                    className="input glass shadow-lg w-full"
+                    value={contrasena}
+                    onChange={(e) => setContrasena(e.target.value)}
+                    // required
+                  />
+                  <div className="card-actions justify-center">
+                    <button
+                      type="submit"
+                      className="btn btn-neutral btn-outline glass shadow-lg"
+                    >
+                      Iniciar Sesión
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ const {
   deleteProducto,
 } = require("../controllers/productos.controller");
 
+// rutas con sus respectivas peticiones
 router.get("/productos/search", getProductos);
 router.get("/productos/search/:id", getProductosID);
 router.post("/productos/create", createProducto);
